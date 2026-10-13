@@ -10,7 +10,7 @@ Muestra el estado de cuenta y planillas adeudadas de la Tasa de Recolección de 
 
 ## Paso 1. Consulta de Estado de Cuenta TRB
 
-Servicio: **Get Estado Cuenta TRB** (Tool ID `2896` / `get-estado-cuenta-trb`)
+Servicio: **Get Estado Cuenta TRB** (Tool ID `2901` / `get-estado-cuenta-trb`)
 
 Headers:
 

@@ -119,7 +119,7 @@ Pregunta:
 
 > Por favor ingresa tu número de cédula o RUC.
 
-Servicio: **Get Kiosko**  
+Servicio: **Get Kiosko** (Tool ID `2880` / `get-kiosko`)  
 Headers:
 
 apikey = 30072026  

@@ -15,7 +15,7 @@ El flujo inicializa las variables de pagos por defecto:
 - `fecha_ultimo_pago`: "No posee pagos anteriores"
 - `valor_ultimo_pago`: "No posee pagos anteriores"
 
-Servicio: **Get Estado Cuenta** (Tool ID `2880` / `get-estado-cuenta`)
+Servicio: **Get Estado Cuenta** (Tool ID `2887` / `get-estado-cuenta`)
 
 Headers:
 
