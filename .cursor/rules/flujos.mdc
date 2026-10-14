@@ -1,0 +1,14 @@
+---
+description: Reglas de los flujos de Interagua. Sin guardia de teléfono, tool de LOPD ni tool de mantenimiento.
+globs: flujos/**/*.md,flujos_v2/**/*.md
+alwaysApply: false
+---
+
+# Flujos de Interagua
+
+Al escribir o corregir un flujo:
+
+- El teléfono de contacto es el de la sesión. No transfieras a Guardia de teléfono ni enlaces `guardia-telefono.md`.
+- No documentes ni invoques la tool de LOPD `SavePoliticaDatos` (tool `1545`, base `1611`, `paramsLODP`, `requiredQuestion`). El consentimiento conversacional sigue en el flujo LOPD; no se persiste con esa tool.
+- No documentes ni invoques la tool Horario de Mantenimiento (tool `6070`). El aviso al cliente, cuando el servicio no está disponible, sigue en el flujo de mensaje de mantenimiento.
+- En `flujos_v2` no uses Skill ID ni payloads de una plataforma. Enlaza los servicios con `../servicios/` y los flujos de la misma carpeta con `./`.

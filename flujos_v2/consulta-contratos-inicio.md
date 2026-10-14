@@ -73,20 +73,7 @@ Pregunta:
 
 > Por favor ingresa tu número de contrato.
 
-Servicio: **Get Info Contrato**
-
-Headers:
-
-apikey = 30072026  
-Content-type = application/json  
-Request:   
-{
-  "accion": "getInfoContrato",  
-  "identificacion": "<contrato ingresada>",  
-  "numeroContrato": "<contrato ingresada>"  
-}
-
-Se envía el número ingresado en los dos campos de la consulta: número de contrato e identificación.
+Servicio: [getInfoContrato](../servicios/getInfoContrato.md). Se envía el número ingresado como contrato y como identificación.
 
 Si el servicio responde, se toma el primer contrato de la lista y se valida en este orden:
 

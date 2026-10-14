@@ -25,18 +25,7 @@ Opciones con botones:
 
 ## Paso 3. Consulta de datos técnicos del contrato
 
-Servicio: **Get Info Contrato** (Tool ID `2937`)  
-Endpoint: `http://192.168.10.148:8081/WSInteragua/ServiceInteragua.asmx?WSDL`  
-Método: `POST (SOAP)`  
-Request:
-```json
-{
-  "env": { "value": "Produccion" },
-  "url": "{{$memory.urlService}}",
-  "identificacion": "<numeroContrato>",
-  "numeroContrato": "<numeroContrato>"
-}
-```
+Servicio: [getInfoContrato](../servicios/getInfoContrato.md).
 
 Diccionario de códigos de error:
 - `20082`: `La cédula ingresada es incorrecta.`
