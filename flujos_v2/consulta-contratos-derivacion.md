@@ -13,11 +13,11 @@ No muestra mensajes de texto ni menús visuales al cliente, garantizando una tra
 
 ## Enrutamiento según el trámite solicitado
 
-El flujo evalúa el valor contenido en la variable de memoria `contexto` y transfiere al usuario a la pantalla correspondiente:
+El flujo evalúa `contexto` (el trámite que pidió la consulta de contratos) y transfiere al usuario a la pantalla correspondiente:
 
 1. **Consulta de saldo de consumo de agua:**
    - Si `contexto` es igual a `saldos`:
-   - Se deriva al flujo [1.1 - Saldos Consumo Agua - Confirmación](./1-1-saldos-consumo-agua-confirmacion.md), donde se le presenta el desglose de sus valores pendientes y fecha límite de pago.
+   - Se deriva a [1.1 - Saldos Consumo Agua - Confirmación](./1-1-saldos-consumo-agua-confirmacion.md). Primero confirma contrato y dirección; si acepta, consulta el estado de cuenta y los últimos pagos.
 
 2. **Convenio de pago:**
    - Si `contexto` es igual a `convenio_pago`:

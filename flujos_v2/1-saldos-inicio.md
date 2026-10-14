@@ -1,25 +1,18 @@
 # 1 - Saldos - Inicio
 
-Punto de entrada cuando el usuario selecciona la opción "Consulta de Saldos" desde el Menú Principal.
+Entrada cuando el cliente elige **Consulta de Saldos**. Deja el trámite en contexto `saldos` y pasa al consentimiento de datos.
 
-Establece el contexto de negocio `saldos` y valida si el cliente cuenta con autorización LOPD activa antes de consultar las deudas de su cuenta.
+## Datos de entrada
 
-## Datos que debe traer al entrar
+- Teléfono de la sesión.
+- `op_menu`: valor `saldos` elegido en [Menú principal - Bienvenida](./0-3-menu-principal-bienvenida.md).
 
-- Teléfono del usuario: `{{$user.phone}}`.
-- Canal: WhatsApp / Web.
+## 1. Contexto
 
-## Paso 1. Configuración de contexto
-
-Al activarse la opción:
-
-1. Registra el hito en analítica: marcador `Saldos Menu`.
-2. Asigna la variable en memoria:
-   - `contexto`: `saldos`
+1. Marcador `Saldos Menu`.
+2. `contexto` = `saldos`.
 
 ## Salida
 
-Transfiere inmediatamente al flujo de verificación de consentimiento legal:
-
-- Transfiere a: [0.1 - LOPD - Inicio](./0-1-lopd-inicio.md).
-  *(Una vez verificada la política, LOPD devolverá al usuario automáticamente a [1 - Saldos - Menu](./1-saldos-menu.md)).*
+- Continúa en [LOPD - Inicio](./0-1-lopd-inicio.md). Con `contexto` = `saldos`, al aceptar la política el trámite vuelve a [1 - Saldos - Menú](./1-saldos-menu.md).
+- Si se abre sin el menú, vuelve a [0 - Inicio](./0-inicio.md).

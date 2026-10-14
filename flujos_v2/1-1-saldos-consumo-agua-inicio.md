@@ -1,34 +1,31 @@
 # 1.1 - Saldos Consumo Agua - Inicio
 
-Inicia la consulta de saldo de consumo de agua potable. Configura los textos personalizados de pregunta y lista de contratos para este trámite y deriva al flujo central de identificación de contratos.
+Prepara los textos de la consulta de contratos para el saldo de agua y pasa a identificar la cuenta.
 
-## Datos que debe traer al entrar
+## Datos de entrada
 
-- Teléfono del usuario: `{{$user.phone}}`.
-- Consentimiento LOPD: Aceptado y vigente.
-- Contexto de navegación: `saldos`.
+- Teléfono de la sesión.
+- Consentimiento LOPD vigente.
+- `contexto`: `saldos`, asignado en [1 - Saldos - Inicio](./1-saldos-inicio.md).
 
-## Paso 1. Configuración de parámetros y mensajes
+## 1. Preparación
 
-El flujo inicializa las variables necesarias en memoria:
+1. Marcador `Saldos Agua`.
+2. Imagen: `https://s3.us-west-2.amazonaws.com/cdn.devlabs.tech/10488%2Fimage%2Fd776e4ae-24d8-46d1-9ec7-cfaa988da276-1752162542075.jpeg`
+3. Pausa de 3 segundos.
+4. Textos que usa [Consulta de contratos](./consulta-contratos-inicio.md) en este trámite. Se asignan aquí:
 
-1. **Marcador de analítica:** `Saldos Agua`.
-2. **Dirección del servicio WSDL:**
-   - `urlService`: `http://192.168.10.112/WSInteragua/ServiceInteragua.asmx?WSDL`
-3. **Textos dinámicos para la consulta:**
-   - Menú de selección (`msm_btn_consultaContrato`):
-     > ¿Quieres consultar tu saldo de consumo de agua con tu número de contrato o número de cédula?
-   - Lista de contratos (`msm_btn_listaContratos`):
-     > A continuación te presentamos los contratos y direcciones asociados a tu identificación. 
-     > 
-     > ¿Sobre cuál quieres consultar tu saldo de consumo de agua?
+`msm_btn_consultaContrato`:
 
-## Paso 2. Pausa conversacional
+> ¿Quieres consultar tu saldo de consumo de agua con tu número de contrato o número de cédula?
 
-Aplica una pausa visual de 3 segundos para asegurar una transición fluida en el chat antes de presentar el menú de selección.
+`msm_btn_listaContratos`:
+
+> A continuación te presentamos los contratos y direcciones asociados a tu identificación.
+>
+> ¿Sobre cuál quieres consultar tu saldo de consumo de agua?
 
 ## Salida
 
-Transfiere inmediatamente con las variables preparadas a:
-
-- [_ Consulta Contratos - Inicio](./consulta-contratos-inicio.md).
+- Continúa en [Consulta de contratos - Inicio](./consulta-contratos-inicio.md). Con `contexto` = `saldos`, [Consulta de contratos - Derivación](./consulta-contratos-derivacion.md) entrega el contrato a [1.1 - Saldos Consumo Agua - Confirmación](./1-1-saldos-consumo-agua-confirmacion.md).
+- Si se abre sin el menú: [0 - Inicio](./0-inicio.md).

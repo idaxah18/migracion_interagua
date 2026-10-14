@@ -1,70 +1,103 @@
 # 1.2 - Saldos TRB - Confirmación
 
-Muestra el estado de cuenta y planillas adeudadas de la Tasa de Recolección de Basura (TRB) para el contrato seleccionado, junto con el último pago registrado en el sistema.
+Confirma el contrato TRB, muestra el saldo y los últimos pagos, y ofrece pagar o volver al menú.
 
-## Datos que debe traer al entrar
+## Datos de entrada
 
-- Contrato seleccionado: `{{$memory.Contrato}}`.
-- Identificación: `{{$memory.identificacion}}`.
-- Contexto: `saldo_trb`.
+- `Contrato`: cuenta elegida en [1.2 - Saldos TRB - Inicio](./1-2-saldos-trb-inicio.md). Trae `ID_CONTRATO` y `DIRECCION_CORTA`.
+- `identificacion`: cédula o RUC escrita por el cliente, o `IDENTIFICACION` del primer contrato de [getKioskoTRB](../servicios/getKioskoTRB.md) cuando busca por contrato.
 
-## Paso 1. Consulta de Estado de Cuenta TRB
+Si se abre sin el contrato: [0 - Inicio](./0-inicio.md).
+
+## 1. Confirmación del contrato
+
+> Por favor confírmanos si está correcto el número de contrato y dirección:
+>
+> *Contrato No. {Contrato.ID_CONTRATO} - {Contrato.DIRECCION_CORTA}*
+>
+> ¿Estás de acuerdo con la información ingresada?
+
+Botones: **Si** · **No**
+
+Si no elige una opción:
+
+> Debes seleccionar una opción para continuar. Escribe *Salir* para cancelar.
+
+- **No:** vuelve a [1.2 - Saldos TRB - Inicio](./1-2-saldos-trb-inicio.md).
+- **Si:** consulta el estado de cuenta TRB.
+
+## 2. Estado de cuenta TRB
 
 Servicio: [getEstadoCuentaTRB](../servicios/getEstadoCuentaTRB.md).
 
-Reglas de respuesta del servicio:
+Si el servicio no responde: [Mensaje de error de servicio](./mensaje-error-servicio.md).
 
-1. Si responde con error, se usa el código:
-   - `801543`: El contrato ingresado es incorrecto, o no tiene contratos activos.
-   - `20082`: La cédula ingresada es incorrecta.
-   - `528`: El contrato ingresado no pertenece al número de identificación registrado en INTERAGUA.
-   - Cualquier otro código: !Lo sentimos¡, el servicio no está disponible actualmente. Por favor, inténtalo nuevamente más tarde.
-2. Si no viene información:
-   - *No se encontró información para el contrato ingresado.*
-3. Si el contrato es válido:
-   - Se formatean las fechas de emisión y vencimiento (eliminando la parte horaria).
-   - Se calcula `tieneDeuda` = `parseFloat(data.DEUDA_PENDIENTE) > 0`.
-   - Se guarda `dataEstadoCuentaTRB` en memoria durante 86400 segundos.
+| Condición | Mensaje (`msm_error`) |
+| --------- | --------------------- |
+| `errorCode` `801543` | El contrato ingresado es incorrecto, o no tiene contratos activos. |
+| `errorCode` `20082` | La cédula ingresada es incorrecta. |
+| `errorCode` `528` | El contrato ingresado no pertenece al número de identificación registrado en INTERAGUA. |
+| Otro error | !Lo sentimos¡, el servicio no está disponible actualmente. Por favor, inténtalo nuevamente más tarde. |
+| Sin datos | No se encontró información para el contrato ingresado |
 
-## Paso 2. Consulta de Pagos TRB
+Si hay error: [Mensaje de error personalizado](./mensaje-error-personalizado.md).
+
+Si es válido:
+
+- Se toma el primer registro y se guarda en `dataEstadoCuentaTRB` (86400 segundos).
+- En `dataEstadoCuentaTRB` se deja solo la fecha (sin hora) en `FECHA_EMISION` y `FECHA_VENC_FACT`.
+- `tieneDeuda` queda en verdadero si `dataEstadoCuentaTRB.DEUDA_PENDIENTE` es mayor que 0.
+
+## 3. Últimos pagos TRB
 
 Servicio: [getConsultaPagosTRB](../servicios/getConsultaPagosTRB.md).
 
-Procesamiento:
-- Si existen pagos anteriores, toma el primer registro y extrae `valor_ultimo_pago` y `fecha_ultimo_pago`.
-- Genera la lista formateada `txt_pagos` con el histórico de pagos de recolección de basura.
+Por defecto, si esta consulta no trae pagos:
 
-## Paso 3. Presentación del saldo TRB
+- `txt_pagos` = `No posee pagos anteriores`
+- `fecha_ultimo_pago` = `No posee pagos anteriores`
+- `valor_ultimo_pago` = `No posee pagos anteriores`
 
-El bot muestra el detalle en pantalla:
+Si el servicio falla con esos valores por defecto, igual se muestra el saldo. Si falla de otro modo: [Mensaje de error de servicio](./mensaje-error-servicio.md).
 
-> A continuación te presento el saldo de la *TRB* - “Tasa de Recolección de Basura”:  
-> 
-> *Saldo actual:* ${{$memory.dataEstadoCuentaTRB.DEUDA_PENDIENTE}}  
-> *Planillas adeudas:* {{$memory.dataEstadoCuentaTRB.ACCOUNT_WITH_BALANCE}}  
-> *Fecha de emisión de la última factura:* {{$memory.dataEstadoCuentaTRB.FECHA_EMISION}}  
-> *Fecha de vencimiento de la última factura:* {{$memory.dataEstadoCuentaTRB.FECHA_VENC_FACT}}  
-> Último pago realizado: $*{{$memory.valor_ultimo_pago}}*  
-> Fecha último pago realizado: *{{$memory.fecha_ultimo_pago}}*  
+Si hay pagos, el primero es el más reciente. De ahí salen `valor_ultimo_pago` (`VALOR_PAGADO`) y `fecha_ultimo_pago` (fecha de `FECHA_PAGO` sin hora). `txt_pagos` se arma así:
 
-## Paso 4. Opciones de continuidad
+`N - Fecha - $Valor - DESCBANCOCLIENTE`
 
-El asistente pregunta:
+## 4. Resumen
 
-> ¿Qué deseas realizar?
+> A continuación te presento el saldo de la *TRB* - “Tasa de Recolección de Basura”:
+>
+> *Saldo actual:* ${dataEstadoCuentaTRB.DEUDA_PENDIENTE}
+> *Planillas adeudas:* {dataEstadoCuentaTRB.ACCOUNT_WITH_BALANCE}
+> *Fecha de emisión de la última factura:* {dataEstadoCuentaTRB.FECHA_EMISION}
+> *Fecha de vencimiento de la última factura:* {dataEstadoCuentaTRB.FECHA_VENC_FACT}
+> Último pago realizado: $*{valor_ultimo_pago}*
+> Fecha último pago realizado: *{fecha_ultimo_pago}*
 
-Botones presentados:
+Marcador `F Saldos TRB`.
 
-1. **Si tiene deuda:**
-   - **Pagar Factura:** Para redirigir a canales de recaudación.
-   - **Otra Consulta:** Para consultar otro contrato o regresar al menú.
-2. **Si no tiene deuda:**
-   - Confirmación de estar al día.
-   - Opción de consultar últimos pagos o volver al menú.
+## 5. Si hay deuda
 
-## Salida
+> ¿Que deseas realizar?
 
-- **Consultar otro contrato TRB:** Transfiere a [_ 1.2 - Saldos TRB - Inicio](./1-2-saldos-trb-inicio.md).
-- **Pagar Factura:** Transfiere a [_ 3 - Pago de Planilla - Inicio](./3-pago-de-planilla-inicio.md).
-- **Otra Consulta / Salir:** Transfiere a [_ Atención Adicional](./atencion-adicional.md) o [_ 0.3 - Menú Principal](../flujos/0-3-menu-principal.md).
-- **En caso de error del servicio:** Transfiere a [_ Mensaje Error Servicio](./mensaje-error-servicio.md).
+Botones: **Últimos pagos** · **Pagar en línea** · **Menú principal**
+
+- **Últimos pagos:** muestra el listado de pagos y luego:
+
+> ¿Que deseas realizar?
+
+Botones: **Pagar en línea** · **Menú principal**
+
+- **Pagar en línea:** [3 - Pago de planilla](./3-pago-de-planilla-inicio.md).
+- **Menú principal:** [Menú principal - Bienvenida](./0-3-menu-principal-bienvenida.md).
+
+## 6. Si no hay deuda
+
+> ¿Quieres consultar los últimos pagos realizados?
+
+Botones: **Si** · **No** · **Menú principal**
+
+- **Si:** muestra el listado de pagos y pasa a [Atención adicional](./atencion-adicional.md).
+- **No:** [Atención adicional](./atencion-adicional.md).
+- **Menú principal:** [Menú principal - Bienvenida](./0-3-menu-principal-bienvenida.md).
