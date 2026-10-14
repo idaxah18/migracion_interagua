@@ -1,0 +1,23 @@
+# 6.0 - Alta Facturación - Inicio
+
+Punto de entrada al proceso de reclamo formal por consumo excesivo o alta facturación de agua potable. Inicializa la estructura de meses para el desglose cronológico de las planillas y prepara el contexto para la validación de políticas de datos.
+
+## Datos que debe traer al entrar
+
+- Teléfono del usuario: `{{$user.phone}}`.
+- Origen de navegación: Selección de *Alta Facturación* desde el Menú de Reclamos o Menú Principal.
+
+## Paso 2. Marcador analítico e inicialización de calendario
+
+1. Se registra el marcador analítico: `Dev Inicio Alta Fact`.
+2. Se almacena en memoria el catálogo de meses para la presentación legible de las facturas:
+   - `MONTH_NAMES`: `["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"]` (vigencia de 86400 segundos / 24 horas).
+3. Se configuran las variables de sesión:
+   - `contexto`: `alta_facturacion`
+   - `num_intentos_ne`: `0`
+
+## Salida
+
+- **Continuación normal:** Transfiere a [_ 0.1 - LOPD - Inicio](./0-1-lopd-inicio.md) para validar el consentimiento de datos personales bajo el contexto `alta_facturacion`.
+- **En caso de fallo técnico:** Transfiere a [_ Mensaje Error Servicio](./mensaje-error-servicio.md).
+- **En caso de reinicio:** Transfiere a [_ 0 - Inicio](./0-inicio.md).
